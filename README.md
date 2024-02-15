@@ -170,67 +170,60 @@ END
 
 **Discription:-**
 
-<p style="text-align: justify">
+Create a stored proc that can determine the market badge based on the following logic, If the total sold quantity > 5 million that market is considered ==Gold== else it is ==Silver==.
 
-As a data analyst, I want to create a stored proc for monthly gross sales reports so that I don't have to modify the query every time manually. Stored proc can be run by other users (who have limited access to the database) and they can generate this report without having to involve the data analytics team.
+My input will be,
 
-</p>
+- Market
+- Fiscal Year
 
-The report should have the following columns,
+Output
 
-- Month
-
-- Total gross sales in that month from a given customer
+- Market badge
 
 **SQL Query :-**
 
 ```sql
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_monthly_gross_sales_for_customer`(
-	in_customer_code TEXT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_market_badge`(
+	IN in_market VARCHAR(45),
+    IN in_fiscal_year YEAR,
+    OUT out_badge VARCHAR(45)
 )
 BEGIN
+	DECLARE qty INT DEFAULT 0;
+    #If value not given for market assume like default market is India
+    IF in_market = "" THEN
+		SET in_market = "India";
+	END IF;
+    #Retrive total qty for given market and fiscal year
 	SELECT
-		s.date,
-		ROUND(SUM(g.gross_price * s.sold_quantity),2) AS gross_monthly_sales
-	FROM
-		fact_sales_monthly s
-	JOIN
-		fact_gross_price g
-	ON
-		g.product_code = s.product_code
-	AND
-		g.fiscal_year = get_fiscal_year(s.date)
+		SUM(s.sold_quantity) AS total_qty
+	FROM fact_sales_monthly s
+	JOIN dim_customer c
+	ON s.customer_code = c.customer_code
 	WHERE
-		FIND_IN_SET(s.customer_code, in_costomer_code)>0
-	GROUP BY s.date
-	ORDER BY s.date DESC;
+		get_fiscal_year(s.date) = in_fiscal_year AND
+        c.market = in_market
+	GROUP BY c.market;
+
+    #Determine market badge
+    IF qty > 5000000 THEN
+		SET out_badge = "Gold";
+	ELSE
+		SET out_badge = "Silver";
+	END IF;
 END
+
+set @out_badge = '0';
+call gdb0041.get_market_badge('india', 2021, @out_badge);
+select @out_badge;
 
 ```
 
 **Result :-**
 
-<div align="center">
-
-| date       | gross_monthly_sales |
-| ---------- | ------------------: |
-| 2021-12-01 |       $ 19537146.56 |
-| 2021-10-01 |       $ 13908229.29 |
-| 2021-09-01 |       $ 11192823.08 |
-| 2021-08-01 |        $ 2349478.82 |
-| 2021-06-01 |        $ 2288587.45 |
-| 2021-05-01 |        $ 2181587.78 |
-| 2021-04-01 |        $ 2253574.91 |
-| 2021-02-01 |        $ 2355170.45 |
-| 2021-01-01 |        $ 2303086.37 |
-| 2020-12-01 |        $ 4078789.92 |
-| 2020-10-01 |        $ 3109316.88 |
-| 2020-09-01 |        $ 2296919.63 |
-| 2020-08-01 |         $ 799327.63 |
-| 2020-06-01 |         $ 362545.14 |
-| 2020-05-01 |         $ 145049.05 |
-| 2020-04-01 |         $ 130520.92 |
-
-</div>
+| @out_badge |
+| ---------- |
+| Silver     |
 
 ---
