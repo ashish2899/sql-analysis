@@ -1,12 +1,8 @@
 # SQL Sales Analysis
 
-<p style="text-align: right">
-
 For many of us in the tech world, SQL (Structured Query Language) is the backbone of data management and analysis. It's a critical skill, whether you're a data analyst, software developer, business analyst, or a professional in virtually any field that relies on data.
 
 Now, let's understand AtliQ's business model. In the industry, domain understanding is actually more important than technical skills.
-
-</p>
 
 ---
 
@@ -174,7 +170,7 @@ END
 
 **Discription:-**
 
-<p style="text-align: right">
+<p style="text-align: justify">
 
 As a data analyst, I want to create a stored proc for monthly gross sales reports so that I don't have to modify the query every time manually. Stored proc can be run by other users (who have limited access to the database) and they can generate this report without having to involve the data analytics team.
 
