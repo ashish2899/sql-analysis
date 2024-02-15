@@ -36,7 +36,7 @@ That is so funny! =:joy:=
 
 [title](https://www.example.com)
 
-    ![alt text](image.jpg)
+![SQL Query](https://t3.ftcdn.net/jpg/05/08/28/24/360_F_508282415_kPLm9LiHsPSxwURuDI2XlNDNADywGcPK.jpg)
 
 ---
 
@@ -57,4 +57,4 @@ GROUP BY s.date
 ORDER BY s.date DESC
 ```
 
----****
+---
