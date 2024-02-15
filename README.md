@@ -4,57 +4,50 @@ For many of us in the tech world, SQL (Structured Query Language) is the backbon
 
 Now, let's understand AtliQ's business model. In the industry, domain understanding is actually more important than technical skills.
 
-That is so funny! =:joy:=
+**1. Gross monthly total sales report for Croma**
 
-<div align="center">
-
-
-| Syntax | Description |
-| :-----------: | :-----------: |
-| Header | Title |
-| Paragraph | Text |
+**Discription:-**
 
 
+As a product owner, I need an aggregate monthly gross sales report for Croma India customers so that I can track how much sales this particular customer is generating for AtliQ and manage our relationships accordingly.
 
-</div>
+The report should have the following fields,
 
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
-   ## Table 3
-**Discussion option 3**
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
+- Month
+- Total gross sales amount to Croma India in this month
 
-> blockquote Ashish Kamble
-
-
-[title](https://www.example.com)
-
-![SQL Query](https://t3.ftcdn.net/jpg/05/08/28/24/360_F_508282415_kPLm9LiHsPSxwURuDI2XlNDNADywGcPK.jpg)
-
----
+**SQL Query :-**
 
 ```sql
 SELECT
     S.date,
     ROUND (SUM(g.gross_price * s.sold_quantity),2) AS gross_total_price
-FROM
-	fact_sales_monthly s
-JOIN
-	fact_gross_price g
-ON
-	g.product_code = s.product_code
-AND
-	g.fiscal_year = get_fiscal_year(s.date)
+FROM fact_sales_monthly s
+JOIN fact_gross_price g
+    ON g.product_code = s.product_code
+    AND g.fiscal_year = get_fiscal_year(s.date)
 WHERE customer_code = 90002002
 GROUP BY s.date
 ORDER BY s.date DESC
+
 ```
 
+**Result :-**
+
+| date | gross_total_price |
+| :- | -: |
+| 2021-12-01 | 19537146.56
+| 2021-10-01 | 13908229.29 |
+| 2021-09-01 | 11192823.08 |
+| 2021-08-01 | 2349478.82 |
+| 2021-06-01 | 2288587.45 |
+| 2021-05-01 | 2181587.78 |
+| 2021-04-01 | 2253574.91 |
+| 2021-02-01 | 2355170.45 |
+| 2021-01-01 | 2303086.37 |
+| 2020-12-01 | 4078789.92 |
+
 ---
+
+
+
