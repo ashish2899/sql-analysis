@@ -470,3 +470,121 @@ ORDER BY net_sales_mln DESC
 </div>
 
 ---
+
+**8. Net sales % share by region**
+
+**Discription:-**
+
+As a product owner, I want to see region-wise (APAC, EU, L TAM, etc) % net sales breakdown by customers in a respective region so that I can perform my regional analysis on the financial performance of the company.
+
+The end result should be bar charts in the following format for FY = 2021. Build a reusable asset that we can use to conduct this analysis for any financial year.
+
+**SQL Query :-**
+
+```sql
+WITH cte AS (
+	SELECT
+		c.customer,
+		c.region,
+		ROUND(SUM(net_sales)/1000000,2) AS net_sales_mln
+	FROM net_sales n
+	JOIN dim_customer c
+		ON n.customer_code = c.customer_code
+	WHERE fiscal_year = 2021
+	GROUP BY c.customer, c.region
+)
+SELECT
+	*,
+	net_sales_mln*100/SUM(net_sales_mln) over(partition by region) AS pct
+FROM cte
+ORDER BY region, net_sales_mln DESC
+```
+
+**Result :-**
+
+- **APAC Region**
+
+<div align="center">
+
+| customer         | region | net_sales_mln |    pct |
+| ---------------- | ------ | ------------: | -----: |
+| Amazon           | APAC   |        $57.41 | 12.99% |
+| Atliq Exclusive  | APAC   |        $51.58 | 11.67% |
+| Atliq e Store    | APAC   |        $36.97 |  8.36% |
+| Leader           | APAC   |        $24.52 |  5.55% |
+| Sage             | APAC   |        $22.85 |  5.17% |
+| Neptune          | APAC   |        $21.01 |  4.75% |
+| Electricalsocity | APAC   |        $16.25 |  3.68% |
+| Propel           | APAC   |        $14.14 |   3.2% |
+| Synthetic        | APAC   |        $14.14 |   3.2% |
+| Flipkart         | APAC   |        $12.96 |  2.93% |
+
+</div>
+
+**Pie Chart :-**
+
+<div align="center">
+
+![net-sales-pie-chart-apac](/images/net-sales-apac.png)
+
+</div>
+
+---
+
+- **EU Region**
+
+<div align="center">
+
+| customer        | region | net_sales_mln |   pct |
+| --------------- | ------ | ------------: | ----: |
+| Atliq e Store   | EU     |        $19.83 | 9.87% |
+| Amazon          | EU     |        $19.77 | 9.84% |
+| Atliq Exclusive | EU     |        $13.39 | 6.67% |
+| UniEuro         | EU     |         $9.63 |  4.8% |
+| Expert          | EU     |         $8.38 | 4.17% |
+| Chip 7          | EU     |         $7.23 |  3.6% |
+| Radio Popular   | EU     |         $6.95 | 3.46% |
+| Media Markt     | EU     |         $6.88 | 3.43% |
+| ElkjÃ¸p         | EU     |         $6.76 | 3.37% |
+| Sorefoz         | EU     |         $6.13 | 3.05% |
+
+</div>
+
+**Pie Chart :-**
+
+<div align="center">
+
+![net-sales-pie-chart-eu](/images/net-sales-eu.png)
+
+</div>
+
+---
+
+- **NA Region**
+
+<div align="center">
+
+| customer         | region | net_sales_mln |    pct |
+| ---------------- | ------ | ------------: | -----: |
+| Amazon           | NA     |        $30.31 | 17.03% |
+| Atliq Exclusive  | NA     |        $14.95 |   8.4% |
+| walmart          | NA     |        $12.63 |   7.1% |
+| Atliq e Store    | NA     |        $12.42 |  6.98% |
+| Costco           | NA     |        $12.19 |  6.85% |
+| Staples          | NA     |        $11.49 |  6.46% |
+| Flipkart         | NA     |        $10.35 |  5.82% |
+| Path             | NA     |         $9.10 |  5.11% |
+| Ebay             | NA     |         $8.74 |  4.91% |
+| Acclaimed Stores | NA     |         $8.53 |  4.79% |
+
+</div>
+
+**Pie Chart :-**
+
+<div align="center">
+
+![net-sales-pie-chart-na](/images/net-sales-na.png)
+
+</div>
+
+---
