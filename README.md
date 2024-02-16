@@ -275,3 +275,124 @@ SELECT * FROM gdb0041.gross_sales;
 ![gross-sales](/images/gross-sales.png)
 
 ---
+
+**6. Top markets, products, and customers for a given financial year.**
+
+**Discription:-**
+
+As a product owner, I want a report for top markets, products, and customers by net sales for a given financial year so that I can have a holistic view of our financial performance and can take appropriate actions to address any potential issues.
+
+We will probably write stored proc for this as we will also need this report going forward.
+
+- **Report for top markets**
+
+**SQL Query :-**
+
+```sql
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_market_by_net_sales`(
+	in_fiscal_year INT,
+    in_top_n INT
+)
+BEGIN
+	SELECT
+		market,
+		ROUND(SUM(net_sales)/1000000,2) AS net_sales_mln
+	FROM net_sales
+	WHERE fiscal_year = in_fiscal_year
+	GROUP BY market
+	ORDER BY net_sales_mln DESC
+	LIMIT in_top_n;
+END
+```
+
+```sql
+call gdb0041.get_top_n_market_by_net_sales(2021, 5);
+```
+
+**Result :-**
+
+| market         | net sales mln |
+| -------------- | ------------: |
+| India          |      $ 210.67 |
+| USA            |      $ 132.05 |
+| South Korea    |       $ 64.01 |
+| Canada         |       $ 45.89 |
+| United Kingdom |       $ 44.73 |
+
+- **Report for top products**
+
+**SQL Query :-**
+
+```sql
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_product_by_net_sales`(
+	in_market VARCHAR(45),
+    in_fiscal_year INT,
+    in_top_n INT
+)
+BEGIN
+	SELECT
+		product,
+		ROUND(SUM(net_sales)/1000000,2) AS net_sales_mln
+	FROM net_sales
+	WHERE fiscal_year = in_fiscal_year
+		AND market = in_market
+	GROUP BY product
+	ORDER BY net_sales_mln DESC
+	LIMIT in_top_n;
+END
+```
+
+```sql
+call gdb0041.get_top_n_product_by_net_sales('India', 2021, 5);
+```
+
+**Result :-**
+
+| product       | net sales mln |
+| ------------- | ------------: |
+| AQ BZ Allinl  |        $ 8.54 |
+| AQ Qwerty     |        $ 7.22 |
+| AQ Trigger    |        $ 6.78 |
+| AQ Gen Y      |        $ 6.02 |
+| AQ Trigger Ms |        $ 5.74 |
+
+- **Report for top customers**
+
+**SQL Query :-**
+
+```sql
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_customer_by_net_sales`(
+	in_market VARCHAR(45),
+    in_fiscal_year INT,
+    in_top_n INT
+)
+BEGIN
+	SELECT
+		c.customer,
+		ROUND(SUM(net_sales)/1000000,2) AS net_sales_mln
+	FROM net_sales n
+	JOIN dim_customer c
+		ON n.customer_code = c.customer_code
+	WHERE fiscal_year = in_fiscal_year
+		AND n.market = in_market
+	GROUP BY c.customer
+	ORDER BY net_sales_mln DESC
+	LIMIT in_top_n;
+END
+```
+
+```sql
+call gdb0041.get_top_n_customer_by_net_sales('India', 2021, 5);
+```
+
+**Result :-**
+
+| customer         | net sales mln |
+| ---------------- | ------------: |
+| Amazon           |        $30.00 |
+| Atliq Exclusive  |        $23.98 |
+| Flipkart         |        $12.96 |
+| Electricalsocity |        $12.31 |
+| Propel           |        $11.86 |
+
+---
