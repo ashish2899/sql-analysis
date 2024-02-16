@@ -705,3 +705,102 @@ SELECT * FROM gdb0041.fact_act_est;
 </div>
 
 ---
+
+**11. Write a query for the below scenario.**
+
+**Discription:-**
+
+The supply chain business manager wants to see which customers’ forecast accuracy has dropped from 2020 to 2021. Provide a complete report with these columns: customer_code, customer_name, market, forecast_accuracy_2020, forecast_accuracy_2021
+
+**SQL Query :-**
+
+- forecast_accuracy_2021
+
+```sql
+create temporary table forecast_accuracy_2021
+with forecast_err_table as (
+	select
+		s.customer_code as customer_code,
+		c.customer as customer_name,
+		c.market as market,
+		sum(s.sold_quantity) as total_sold_qty,
+		sum(s.forecast_quantity) as total_forecast_qty,
+		sum(s.forecast_quantity-s.sold_quantity) as net_error,
+		round( sum( s.forecast_quantity - s.sold_quantity ) * 100 / sum( s.forecast_quantity ) , 1 ) as net_error_pct,
+		sum(abs(s.forecast_quantity-s.sold_quantity)) as abs_error,
+		round ( sum( abs( s.forecast_quantity - sold_quantity ) ) * 100 / sum( s.forecast_quantity ) , 2 ) as abs_error_pct
+	from fact_act_est s
+	join dim_customer c
+	on s.customer_code = c.customer_code
+	where s.fiscal_year=2021
+	group by customer_code
+)
+Select
+	*,
+	if (abs_error_pct > 100, 0, 100.0 - abs_error_pct) as forecast_accuracy
+from forecast_err_table
+order by forecast_accuracy desc;
+```
+
+- forecast_accuracy_2020
+
+```sql
+create temporary table forecast_accuracy_2020
+with forecast_err_table as (
+	select
+		s.customer_code as customer_code,
+		c.customer as customer_name,
+		c.market as market,
+		sum(s.sold_quantity) as total_sold_qty,
+		sum(s.forecast_quantity) as total_forecast_qty,
+		sum(s.forecast_quantity-s.sold_quantity) as net_error,
+		round( sum( s.forecast_quantity - s.sold_quantity ) * 100 / sum( s.forecast_quantity ) , 1 ) as net_error_pct,
+		sum(abs(s.forecast_quantity-s.sold_quantity)) as abs_error,
+		round ( sum( abs( s.forecast_quantity - sold_quantity ) ) * 100 / sum( s.forecast_quantity ) , 2 ) as abs_error_pct
+	from fact_act_est s
+	join dim_customer c
+	on s.customer_code = c.customer_code
+	where s.fiscal_year=2020
+	group by customer_code
+)
+Select
+	*,
+	if (abs_error_pct > 100, 0, 100.0 - abs_error_pct) as forecast_accuracy
+from forecast_err_table
+order by forecast_accuracy desc;
+```
+
+```sql
+select
+	f_2020.customer_code,
+	f_2020.customer_name,
+	f_2020.market,
+	f_2020.forecast_accuracy as forecast_acc_2020,
+	f_2021.forecast_accuracy as forecast_acc_2021
+from forecast_accuracy_2020 f_2020
+join forecast_accuracy_2021 f_2021
+on f_2020.customer_code = f_2021.customer_code
+where f_2021.forecast_accuracy < f_2020.forecast_accuracy
+order by forecast_acc_2020 desc;
+```
+
+**Result :-**
+
+<div align="center">
+
+| customer_code | customer_name   | market      | forecast_acc_2020 | forecast_acc_2021 |
+| ------------- | --------------- | ----------- | ----------------: | ----------------: |
+| 70006158      | Atliq e Store   | Philiphines |             42.65 |             24.49 |
+| 70008170      | Atliq e Store   | Australia   |             40.96 |             38.74 |
+| 90005161      | Zone            | Pakistan    |             40.08 |              37.1 |
+| 90014140      | Radio Popular   | Netherlands |             38.53 |                 0 |
+| 90008166      | Sound           | Australia   |             38.51 |             36.79 |
+| 70014143      | Atliq e Store   | Netherlands |             38.32 |                 0 |
+| 90004062      | Flawless Stores | Japan       |             38.22 |             32.56 |
+| 90014137      | Media Markt     | Netherlands |             37.85 |                 0 |
+| 90014138      | Mbit            | Netherlands |             37.83 |                 0 |
+| 70004069      | Atliq Exclusive | Japan       |             37.62 |             32.09 |
+
+</div>
+
+---
