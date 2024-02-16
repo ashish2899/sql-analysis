@@ -272,18 +272,17 @@ SELECT * FROM gdb0041.gross_sales;
 
 **Result :-**
 
-| date     | fiscal_year | customer_code | customer        | market      | product_code | product                                                       | variant  | sold_quantity | gross_price_per_item | gross_price_total |
-| -------- | ----------- | ------------- | --------------- | ----------- | ------------ | ------------------------------------------------------------- | -------- | ------------- | -------------------- | ----------------- |
-| 9/1/2017 | 2018        | 70002017      | Atliq Exclusive | India       | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 51            | 15.3952              | 785.16            |
-| 9/1/2017 | 2018        | 70002018      | Atliq e Store   | India       | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 77            | 15.3952              | 1185.43           |
-| 9/1/2017 | 2018        | 70003181      | Atliq Exclusive | Indonesia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 17            | 15.3952              | 261.72            |
-| 9/1/2017 | 2018        | 70003182      | Atliq e Store   | Indonesia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 6             | 15.3952              | 92.37             |
-| 9/1/2017 | 2018        | 70006157      | Atliq Exclusive | Philiphines | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 5             | 15.3952              | 76.98             |
-| 9/1/2017 | 2018        | 70006158      | Atliq e Store   | Philiphines | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 7             | 15.3952              | 107.77            |
-| 9/1/2017 | 2018        | 70007198      | Atliq Exclusive | South Korea | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 29            | 15.3952              | 446.46            |
-| 9/1/2017 | 2018        | 70007199      | Atliq e Store   | South Korea | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 34            | 15.3952              | 523.44            |
-| 9/1/2017 | 2018        | 70008169      | Atliq Exclusive | Australia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 22            | 15.3952              | 338.69            |
-| 9/1/2017 | 2018        | 70008170      | Atliq e Store   | Australia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 5             | 15.3952              | 76.98             |
-
+| date     | fiscal_year | customer_code | customer        | market      | product_code | variant  | sold_quantity | gross_price_per_item | gross_price_total |
+| -------- | ----------- | ------------- | --------------- | ----------- | ------------ | -------- | ------------- | -------------------- | ----------------- |
+| 9/1/2017 | 2018        | 70002017      | Atliq Exclusive | India       | A0118150101  | Standard | 51            | 15.3952              | 785.16            |
+| 9/1/2017 | 2018        | 70002018      | Atliq e Store   | India       | A0118150101  | Standard | 77            | 15.3952              | 1185.43           |
+| 9/1/2017 | 2018        | 70003181      | Atliq Exclusive | Indonesia   | A0118150101  | Standard | 17            | 15.3952              | 261.72            |
+| 9/1/2017 | 2018        | 70003182      | Atliq e Store   | Indonesia   | A0118150101  | Standard | 6             | 15.3952              | 92.37             |
+| 9/1/2017 | 2018        | 70006157      | Atliq Exclusive | Philiphines | A0118150101  | Standard | 5             | 15.3952              | 76.98             |
+| 9/1/2017 | 2018        | 70006158      | Atliq e Store   | Philiphines | A0118150101  | Standard | 7             | 15.3952              | 107.77            |
+| 9/1/2017 | 2018        | 70007198      | Atliq Exclusive | South Korea | A0118150101  | Standard | 29            | 15.3952              | 446.46            |
+| 9/1/2017 | 2018        | 70007199      | Atliq e Store   | South Korea | A0118150101  | Standard | 34            | 15.3952              | 523.44            |
+| 9/1/2017 | 2018        | 70008169      | Atliq Exclusive | Australia   | A0118150101  | Standard | 22            | 15.3952              | 338.69            |
+| 9/1/2017 | 2018        | 70008170      | Atliq e Store   | Australia   | A0118150101  | Standard | 5             | 15.3952              | 76.98             |
 
 ---
