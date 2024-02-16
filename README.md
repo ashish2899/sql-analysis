@@ -588,3 +588,120 @@ ORDER BY region, net_sales_mln DESC
 </div>
 
 ---
+
+**9. Get top n products in each division by their quantity sold.**
+
+**Discription:-**
+
+Write a stored proc for getting TOP n products in each division by their quantity sold in a given financial year. For example below would be the result for FY=2021.
+
+**SQL Query :-**
+
+```sql
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_product_by_net_sales`(
+	in_market VARCHAR(45),
+	in_fiscal_year INT,
+	in_top_n INT
+)
+BEGIN
+	SELECT
+		product,
+		ROUND(SUM(net_sales)/1000000,2) AS net_sales_mln
+	FROM net_sales
+	WHERE fiscal_year = in_fiscal_year
+		AND market = in_market
+	GROUP BY product
+	ORDER BY net_sales_mln DESC
+	LIMIT in_top_n;
+END
+```
+
+```sql
+call gdb0041.get_top_n_product_by_net_sales('india', 2021, 5);
+```
+
+**Result :-**
+
+<div align="center">
+
+| product       | net_sales_mln |
+| ------------- | ------------: |
+| AQ BZ Allinl  |         $8.54 |
+| AQ Qwerty     |         $7.22 |
+| AQ Trigger    |         $6.78 |
+| AQ Gen Y      |         $6.02 |
+| AQ Trigger Ms |         $5.74 |
+
+</div>
+
+---
+
+**10. Creating a fact_act_est.**
+
+**Discription:-**
+
+using the fact_sales_mothly and fact_forecast_monthly create a fact_act_est.
+
+**SQL Query :-**
+
+```sql
+create table fact_act_est(
+	select
+		s.date as date,
+		s.fiscal_year as fiscal_year,
+		s.product_code as product_code,
+		s.customer_code as customer_code,
+		s.sold_quantity as sold_quantity,
+		f.forecast_quantity as forecast_quantity
+	from fact_sales_monthly s
+	left join fact_forecast_monthly f
+	using (date, customer_code, product_code)
+)
+union
+(
+	select
+		f.date as date,
+		f.fiscal_year as fiscal_year,
+		f.product_code as product_code,
+		f.customer_code as customer_code,
+		s.sold_quantity as sold_quantity,
+		f.forecast_quantity as forecast_quantity
+	from fact_forecast_monthly  f
+	left join fact_sales_monthly s
+	using (date, customer_code, product_code)
+);
+
+update fact_act_est
+set sold_quantity = 0
+where sold_quantity is null;
+
+update fact_act_est
+set forecast_quantity = 0
+where forecast_quantity is null;
+
+```
+
+```sql
+SELECT * FROM gdb0041.fact_act_est;
+```
+
+**Result :-**
+
+<div align="center">
+
+| date     | fiscal_year | product_code | customer_code | sold_quantity | forecast_quantity |
+| -------- | ----------- | ------------ | ------------- | ------------: | ----------------: |
+| 9/1/2017 | 2018        | A0118150101  | 70002017      |            51 |                18 |
+| 9/1/2017 | 2018        | A0118150101  | 70002018      |            77 |                11 |
+| 9/1/2017 | 2018        | A0118150101  | 70003181      |            17 |                 9 |
+| 9/1/2017 | 2018        | A0118150101  | 70003182      |             6 |                 6 |
+| 9/1/2017 | 2018        | A0118150101  | 70006157      |             5 |                 5 |
+| 9/1/2017 | 2018        | A0118150101  | 70006158      |             7 |                 6 |
+| 9/1/2017 | 2018        | A0118150101  | 70007198      |            29 |                 4 |
+| 9/1/2017 | 2018        | A0118150101  | 70007199      |            34 |                 7 |
+| 9/1/2017 | 2018        | A0118150101  | 70008169      |            22 |                 7 |
+| 9/1/2017 | 2018        | A0118150101  | 70008170      |             5 |                 8 |
+
+</div>
+
+---
