@@ -404,6 +404,7 @@ call gdb0041.get_top_n_customer_by_net_sales('India', 2021, 5);
 **Result :-**
 
 <div align="center">
+
 | customer         | net sales mln |
 | ---------------- | ------------: |
 | Amazon           |        $30.00 |
