@@ -170,7 +170,7 @@ END
 
 **Discription:-**
 
-Create a stored proc that can determine the market badge based on the following logic, If the total sold quantity > 5 million that market is considered ==Gold== else it is ==Silver==.
+Create a stored proc that can determine the market badge based on the following logic, If the total sold quantity > 5 million that market is considered Gold else it is Silver.
 
 My input will be,
 
@@ -213,11 +213,12 @@ BEGIN
 		SET out_badge = "Silver";
 	END IF;
 END
+```
 
+```sql
 set @out_badge = '0';
 call gdb0041.get_market_badge('india', 2021, @out_badge);
 select @out_badge;
-
 ```
 
 **Result :-**
@@ -225,5 +226,64 @@ select @out_badge;
 | @out_badge |
 | ---------- |
 | Silver     |
+
+---
+
+**5. Create a view for gross sales. It should have the following columns.**
+
+**Discription:-**
+
+date, fiscal_year, customer_code, customer, market, product_code, product, variant, sold_quanity, gross_price_per_item, gross_price_total
+
+**SQL Query :-**
+
+```sql
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`localhost`
+    SQL SECURITY DEFINER
+VIEW `gross_sales` AS
+    SELECT
+		S.date,
+		S.fiscal_year,
+		S.customer_code,
+		C.customer,
+		C.market,
+		S.product_code,
+		P.product,
+		P.variant,
+		S.sold_quantity,
+		g.gross_price AS gross_price_per_item,
+		ROUND((s.sold_quantity * g.gross_price),2) AS gross_price_total
+	FROM fact_sales_monthly s
+	JOIN dim_customer c
+		ON s.customer_code = c.customer_code
+	JOIN dim_product p
+		ON s.product_code = p.product_code
+	JOIN fact_gross_price g
+		ON s.fiscal_year = g.fiscal_year
+		AND s.product_code = g.product_code
+
+```
+
+```sql
+SELECT * FROM gdb0041.gross_sales;
+```
+
+**Result :-**
+
+| date     | fiscal_year | customer_code | customer        | market      | product_code | product                                                       | variant  | sold_quantity | gross_price_per_item | gross_price_total |
+| -------- | ----------- | ------------- | --------------- | ----------- | ------------ | ------------------------------------------------------------- | -------- | ------------- | -------------------- | ----------------- |
+| 9/1/2017 | 2018        | 70002017      | Atliq Exclusive | India       | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 51            | 15.3952              | 785.16            |
+| 9/1/2017 | 2018        | 70002018      | Atliq e Store   | India       | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 77            | 15.3952              | 1185.43           |
+| 9/1/2017 | 2018        | 70003181      | Atliq Exclusive | Indonesia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 17            | 15.3952              | 261.72            |
+| 9/1/2017 | 2018        | 70003182      | Atliq e Store   | Indonesia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 6             | 15.3952              | 92.37             |
+| 9/1/2017 | 2018        | 70006157      | Atliq Exclusive | Philiphines | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 5             | 15.3952              | 76.98             |
+| 9/1/2017 | 2018        | 70006158      | Atliq e Store   | Philiphines | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 7             | 15.3952              | 107.77            |
+| 9/1/2017 | 2018        | 70007198      | Atliq Exclusive | South Korea | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 29            | 15.3952              | 446.46            |
+| 9/1/2017 | 2018        | 70007199      | Atliq e Store   | South Korea | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 34            | 15.3952              | 523.44            |
+| 9/1/2017 | 2018        | 70008169      | Atliq Exclusive | Australia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 22            | 15.3952              | 338.69            |
+| 9/1/2017 | 2018        | 70008170      | Atliq e Store   | Australia   | A0118150101  | AQ Dracula HDD â€“ 3.5 Inch SATA 6 Gb/s 5400 RPM 256 MB Cache | Standard | 5             | 15.3952              | 76.98             |
+
 
 ---
