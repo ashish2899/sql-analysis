@@ -272,7 +272,11 @@ SELECT * FROM gdb0041.gross_sales;
 
 **Result :-**
 
+<div align="center">
+
 ![gross-sales](/images/gross-sales.png)
+
+</div>
 
 ---
 
@@ -311,6 +315,8 @@ call gdb0041.get_top_n_market_by_net_sales(2021, 5);
 
 **Result :-**
 
+<div align="center">
+
 | market         | net sales mln |
 | -------------- | ------------: |
 | India          |      $ 210.67 |
@@ -318,6 +324,10 @@ call gdb0041.get_top_n_market_by_net_sales(2021, 5);
 | South Korea    |       $ 64.01 |
 | Canada         |       $ 45.89 |
 | United Kingdom |       $ 44.73 |
+
+</div>
+
+---
 
 - **Report for top products**
 
@@ -348,6 +358,8 @@ call gdb0041.get_top_n_product_by_net_sales('India', 2021, 5);
 
 **Result :-**
 
+<div align="center">
+
 | product       | net sales mln |
 | ------------- | ------------: |
 | AQ BZ Allinl  |        $ 8.54 |
@@ -355,6 +367,10 @@ call gdb0041.get_top_n_product_by_net_sales('India', 2021, 5);
 | AQ Trigger    |        $ 6.78 |
 | AQ Gen Y      |        $ 6.02 |
 | AQ Trigger Ms |        $ 5.74 |
+
+</div>
+
+---
 
 - **Report for top customers**
 
@@ -387,6 +403,7 @@ call gdb0041.get_top_n_customer_by_net_sales('India', 2021, 5);
 
 **Result :-**
 
+<div align="center">
 | customer         | net sales mln |
 | ---------------- | ------------: |
 | Amazon           |        $30.00 |
@@ -394,5 +411,62 @@ call gdb0041.get_top_n_customer_by_net_sales('India', 2021, 5);
 | Flipkart         |        $12.96 |
 | Electricalsocity |        $12.31 |
 | Propel           |        $11.86 |
+
+</div>
+
+---
+
+**7. Net sales % share Global.**
+
+**Discription:-**
+
+AS product owner, I want to see a bar Chart report for FY—2021 for top IO markets by % net sales.
+
+**SQL Query :-**
+
+```sql
+WITH cte AS (
+	SELECT
+		C.customer,
+		ROUND(SUM(net_sales)/1000000,2) AS net_sales_mln
+	FROM net_sales n
+	JOIN dim_customer c
+		ON n.customer_code = c.customer_code
+	WHERE fiscal_year = 2021
+	GROUP BY c.customer
+)
+SELECT
+	*,
+	net_sales_mln*100/SUM(net_sales_mln) over() AS pct
+FROM cte
+ORDER BY net_sales_mln DESC
+```
+
+**Result :-**
+
+<div align="center">
+
+| customer         | net sales mln |    pct |
+| ---------------- | ------------: | -----: |
+| Amazon           |       $109.03 | 13.23% |
+| Atliq Exclusive  |        $79.92 |   9.7% |
+| Atliq e Store    |        $70.31 |  8.53% |
+| Sage             |        $27.07 |  3.29% |
+| Flipkart         |        $25.25 |  3.06% |
+| Leader           |        $24.52 |  2.98% |
+| Neptune          |        $21.01 |  2.55% |
+| Ebay             |        $19.88 |  2.41% |
+| Electricalsocity |        $16.25 |  1.97% |
+| Synthetic        |        $16.10 |  1.95% |
+
+</div>
+
+**Bar Chart :-**
+
+<div align="center">
+
+![net-sales-bar-chart](/images/net-sales-bar-chart.png)
+
+</div>
 
 ---
